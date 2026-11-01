@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guess The Football Match Result</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#080b1a;--panel:#111631;--panel2:#171d40;--line:#262e5a;--text:#eaeefc;--mute:#8d96c4;--neon:#38f2c8;--hot:#ff4d8d;--gold:#ffc933;
+--disp:'Barlow Condensed','Arial Narrow',Impact,sans-serif;--body:'Figtree',system-ui,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:radial-gradient(900px 500px at 85% -10%,#2a1d63 0,transparent 60%),var(--bg);color:var(--text);font:400 15px/1.5 var(--body);min-height:100vh}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--neon);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 48px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:16px 0}
+.brand{font:800 26px/1 var(--disp);letter-spacing:.5px;margin-right:auto}
+.brand span{color:var(--neon)}
+.chip{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 8px}
+.chip b{font:700 20px/1 var(--disp)}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--hot),#7c4dff);display:grid;place-items:center;font-weight:700}
+.badge{display:inline-flex;align-items:center;gap:6px;font:700 15px/1 var(--disp);padding:5px 10px;border-radius:6px;border:1.5px solid var(--c);color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);letter-spacing:.4px}
+.badge::before{content:"";width:8px;height:8px;background:var(--c);transform:rotate(45deg)}
+.btn{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-weight:700}
+.btn:hover{border-color:var(--neon)}
+.btn.pri{background:var(--neon);color:#04221b;border-color:var(--neon)}
+.btn.pri:hover{filter:brightness(1.1)}
+.profile{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat small{display:block;color:var(--mute);font-size:13px}
+.stat b{font:800 38px/1.05 var(--disp)}
+.bar{height:10px;border-radius:99px;background:#0b0f26;overflow:hidden;margin:10px 0 4px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--neon),#7c4dff);transition:width .6s}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:20px 0 12px;scrollbar-width:thin}
+.tab{flex:none;background:transparent;border:1px solid var(--line);border-radius:99px;padding:7px 14px;color:var(--mute);font-weight:700}
+.tab[aria-selected=true]{background:var(--neon);color:#04221b;border-color:var(--neon)}
+.tools{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:12px;color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.card.final{border-color:#3a4390}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:13px}
+.row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;text-align:center}
+.team{display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:700;font-size:14px}
+.crest{width:46px;height:46px;object-fit:contain;flex:none}
+.crest-fallback{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font:800 15px var(--disp);letter-spacing:.5px;color:#fff;border:2px solid rgba(255,255,255,.25);background:hsl(var(--h) 60% 38%)}
+.score{display:flex;align-items:center;gap:6px}
+.score input{width:52px;height:56px;text-align:center;font:800 30px var(--disp);background:#0b0f26;border:1px solid var(--line);border-radius:10px;-moz-appearance:textfield}
+.score input:disabled{opacity:.7}
+.score input::-webkit-outer-spin-button,.score input::-webkit-inner-spin-button{-webkit-appearance:none}
+.dash{color:var(--mute);font-weight:700}
+.actual{text-align:center;font:800 15px var(--disp);color:var(--mute);letter-spacing:.3px}
+.actual b{color:var(--text);font-size:22px}
+.pts{padding:8px;border-radius:8px;text-align:center;font-weight:700}
+.pts.p100{background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold)}
+.pts.p50{background:color-mix(in srgb,var(--neon) 15%,transparent);color:var(--neon)}
+.pts.p0{background:color-mix(in srgb,var(--hot) 14%,transparent);color:var(--hot)}
+.actions{display:flex;gap:8px}.actions .btn{flex:1}
+dialog{width:min(640px,94vw);max-height:86vh;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:0}
+dialog::backdrop{background:rgba(3,5,15,.75)}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.dh h2{margin:0;font:800 28px var(--disp)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--mute);font-weight:500;font-size:13px}
+td.n{font:700 18px var(--disp);width:44px}
+tr.me{background:color-mix(in srgb,var(--neon) 12%,transparent)}
+.scroll{overflow:auto;max-height:64vh}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--panel2);border:1px solid var(--neon);border-radius:10px;padding:10px 18px;font-weight:700;z-index:9;max-width:92vw}
+.ladder{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+@media(max-width:720px){.profile{grid-template-columns:1fr 1fr}.profile .wide{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Hide Netlify injected badges, marks, and footer branding */
+[class*="netlify"],
+[id*="netlify"],
+iframe[src*="netlify"],
+.netlify-badge,
+#netlify-badge {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">GUESS THE <span>FOOTBALL</span> MATCH RESULT</div>
+    <div class="chip"><div class="avatar">Y</div><div><div style="font-size:12px;color:var(--mute);line-height:1.1">You</div><span id="hdrBadge"></span></div><b id="hdrPts">0</b></div>
+    <button class="btn" id="openLb">Global leaderboard</button>
+  </header>
+  <section class="profile" id="profile" aria-label="Your profile"></section>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Leagues"></div>
+  <div class="tools"><span id="count"></span><div style="display:flex;gap:8px"><button class="btn" id="simAll">Play all full-time</button><button class="btn" id="reset">Reset game</button></div></div>
+  <main class="grid" id="grid"></main>
+</div>
+<dialog id="lb" aria-labelledby="lbT"><div class="dh"><h2 id="lbT">Global leaderboard</h2><button class="btn" id="closeLb">Close</button></div><div class="scroll" id="lbBody"></div></dialog>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============ DATA MODELS ============ */
+const LEAGUES = {
+  'Premier League': 'Arsenal|ARS,Man City|MCI,Liverpool|LIV,Chelsea|CHE,Tottenham|TOT,Newcastle|NEW',
+  'La Liga': 'Real Madrid|RMA,Barcelona|BAR,Atlético|ATM,Sevilla|SEV,Valencia|VAL,Villarreal|VIL',
+  'Bundesliga': 'Bayern|FCB,Dortmund|BVB,Leverkusen|B04,Leipzig|RBL,Frankfurt|SGE,Stuttgart|VFB',
+  'Serie A': 'Inter|INT,Milan|MIL,Juventus|JUV,Napoli|NAP,Roma|ROM,Atalanta|ATA',
+  'Ligue 1': 'PSG|PSG,Marseille|OM,Monaco|ASM,Lille|LIL,Lyon|OL,Nice|OGC',
+  'Primeira Liga': 'Benfica|SLB,Porto|FCP,Sporting|SCP,Braga|SCB,Vitória|VSC,Famalicão|FAM',
+  'UEFA Champions League': 'Real Madrid|RMA,Bayern|FCB,Man City|MCI,Inter|INT,PSG|PSG,Barcelona|BAR',
+  'UEFA Europa League': 'Roma|ROM,Tottenham|TOT,Lyon|OL,Porto|FCP,Leverkusen|B04,Atalanta|ATA'
+};
+const TIERS = [
+  {name:'Iron',min:0,color:'#9aa3b8'},{name:'Bronze',min:300,color:'#d98a45'},
+  {name:'Silver',min:700,color:'#d3dcea'},{name:'Gold',min:1200,color:'#ffc933'},
+  {name:'Diamond',min:2000,color:'#5ee7ff'},{name:'Global Mania',min:3500,color:'#c77dff'},
+  {name:'Referee',min:5500,color:'#ff4d6d'}
+];
+const outcome = (h,a) => h>a ? 'H' : h<a ? 'A' : 'D';
+
+class Team {
+  constructor(raw){ [this.name,this.code] = raw.split('|'); this.hue = [...this.code].reduce((s,c)=>s*31+c.charCodeAt(0),7)%360; }
+}
+class Match {
+  constructor(id,league,home,away,kickoff){
+    Object.assign(this,{id,league,home,away,kickoff});
+    this.result = null; this.guess = null; this.points = null;
+  }
+  get status(){ return this.result ? 'final' : this.guess ? 'predicted' : 'open'; }
+}
+
+/* ============ TEAM CRESTS ============ */
+const CRESTS = {
+  'Arsenal':'https://www.liblogo.com/img-logo/ar2907a121-arsenal-logo-arsenal-fc-re-logo-animation-on-behance.png',
+  'Man City':'https://crests.football-data.org/65.png','Liverpool':'https://crests.football-data.org/64.png','Chelsea':'https://crests.football-data.org/61.png','Tottenham':'https://crests.football-data.org/73.png','Newcastle':'https://crests.football-data.org/67.png',
+  'Real Madrid':'https://crests.football-data.org/86.png','Barcelona':'https://crests.football-data.org/81.png','Atlético':'https://crests.football-data.org/78.png','Sevilla':'https://crests.football-data.org/559.png','Valencia':'https://crests.football-data.org/95.png','Villarreal':'https://crests.football-data.org/94.png',
+  'Bayern':'https://crests.football-data.org/5.png','Dortmund':'https://crests.football-data.org/4.png','Leverkusen':'https://crests.football-data.org/3.png','Leipzig':'https://crests.football-data.org/721.png','Frankfurt':'https://crests.football-data.org/19.png','Stuttgart':'https://crests.football-data.org/10.png',
+  'Inter':'https://crests.football-data.org/108.png','Milan':'https://crests.football-data.org/98.png','Juventus':'https://crests.football-data.org/109.png','Napoli':'https://crests.football-data.org/113.png','Roma':'https://crests.football-data.org/100.png','Atalanta':'https://crests.football-data.org/102.png',
+  'PSG':'https://crests.football-data.org/524.png','Marseille':'https://crests.football-data.org/516.png','Monaco':'https://crests.football-data.org/548.png','Lille':'https://crests.football-data.org/521.png','Lyon':'https://crests.football-data.org/523.png','Nice':'https://crests.football-data.org/522.png',
+  'Benfica':'https://crests.football-data.org/1903.png','Porto':'https://crests.football-data.org/1906.png','Sporting':'https://crests.football-data.org/1904.png','Braga':'https://crests.football-data.org/1897.png','Vitória':'https://crests.football-data.org/1896.png','Famalicão':'https://crests.football-data.org/5531.png'
+};
+
+/* ============ MOCK DATA GENERATOR ============ */
+class MockDataGenerator {
+  static fixtures(){
+    const pairs = [[0,1],[2,3],[4,5],[3,0]], days = ['Sat 17:00','Sat 20:00','Sun 15:30','Sun 20:45'];
+    const out = [];
+    Object.entries(LEAGUES).forEach(([league,list],li) => {
+      const t = list.split(',').map(r => new Team(r));
+      pairs.forEach((p,i) => out.push(new Match(`${li}-${i}`,league,t[p[0]],t[p[1]],days[i])));
+    });
+    return out;
+  }
+  static score(){
+    const pool=[0,0,1,1,1,2,2,3,4]; const r=()=>pool[Math.floor(Math.random()*pool.length)];
+    return {h:r(),a:r()};
+  }
+  static leaderboard(){ return []; }
+}
+
+/* ============ BUSINESS LOGIC ============ */
+class ScoringEngine {
+  static EXACT = 100; static OUTCOME = 50;
+  static evaluate(guess,res){
+    if(guess.h===res.h && guess.a===res.a) return {pts:ScoringEngine.EXACT,kind:'exact'};
+    if(outcome(guess.h,guess.a)===outcome(res.h,res.a)) return {pts:ScoringEngine.OUTCOME,kind:'outcome'};
+    return {pts:0,kind:'miss'};
+  }
+  static settle(match,res,profile){
+    match.result = res;
+    const e = ScoringEngine.evaluate(match.guess,res);
+    match.points = e.pts;
+    profile.record(e);
+    return e;
+  }
+}
+class UserProfile {
+  constructor(){ this.reset(); }
+  reset(){ this.points=0; this.played=0; this.exact=0; this.outcomeHits=0; this.wins=0; this.losses=0; }
+  record(e){
+    this.played++; this.points += e.pts;
+    if(e.kind==='exact') this.exact++;
+    if(e.kind!=='miss'){ this.outcomeHits++; this.wins++; } else this.losses++;
+  }
+  get tier(){ return [...TIERS].reverse().find(t => this.points>=t.min); }
+  get nextTier(){ return TIERS[TIERS.indexOf(this.tier)+1] || null; }
+  get progress(){
+    const n=this.nextTier; if(!n) return 100;
+    return Math.round((this.points-this.tier.min)/(n.min-this.tier.min)*100);
+  }
+  get accuracy(){ return this.played ? Math.round(this.outcomeHits/this.played*100) : 0; }
+  rank(board){ return 1 + board.filter(p => p.points > this.points).length; }
+}
+class Leaderboard {
+  constructor(profile){ this.profile=profile; this.bots=MockDataGenerator.leaderboard(); }
+  entries(){
+    const me={name:'You',points:this.profile.points,accuracy:this.profile.accuracy,me:true};
+    return [...this.bots,me].sort((a,b)=>b.points-a.points || (a.me?1:-1));
+  }
+}
+class Store {
+  static KEY='gtfmr-v1';
+  static save(game){
+    try{
+      localStorage.setItem(Store.KEY,JSON.stringify({p:game.profile,m:game.matches.map(m=>({id:m.id,g:m.guess,r:m.result,pt:m.points}))}));
+    }catch(e){}
+  }
+  static load(game){
+    try{
+      const d=JSON.parse(localStorage.getItem(Store.KEY)||'null'); if(!d) return;
+      Object.assign(game.profile,d.p);
+      d.m.forEach(s=>{const m=game.matches.find(x=>x.id===s.id); if(m){m.guess=s.g;m.result=s.r;m.points=s.pt;}});
+    }catch(e){}
+  }
+}
+
+/* ============ UI ============ */
+class App {
+  constructor(){
+    this.profile=new UserProfile(); this.matches=MockDataGenerator.fixtures();
+    Store.load(this); this.board=new Leaderboard(this.profile); this.league='All Leagues';
+    this.$=id=>document.getElementById(id); this.bind(); this.render();
+  }
+  bind(){
+    this.$('grid').addEventListener('click',e=>{
+      const b=e.target.closest('button[data-act]'); if(!b) return;
+      const m=this.matches.find(x=>x.id===b.dataset.id);
+      b.dataset.act==='submit' ? this.submit(m) : this.finish(m);
+    });
+    this.$('tabs').addEventListener('click',e=>{
+      const t=e.target.closest('.tab'); if(t){ this.league=t.dataset.l; this.render(); }
+    });
+    this.$('openLb').onclick=()=>{ this.renderLb(); this.$('lb').showModal(); };
+    this.$('closeLb').onclick=()=>this.$('lb').close();
+    this.$('simAll').onclick=()=>{
+      const todo=this.matches.filter(m=>m.guess&&!m.result);
+      if(!todo.length) return this.toast('Submit at least one prediction first.');
+      todo.forEach(m=>ScoringEngine.settle(m,MockDataGenerator.score(),this.profile));
+      this.after(`${todo.length} matches finished. Points updated.`);
+    };
+    this.$('reset').onclick=()=>{
+      if(!confirm('Reset all predictions and points?')) return;
+      this.profile.reset(); this.matches.forEach(m=>{m.guess=m.result=m.points=null;}); this.after('Game reset.');
+    };
+  }
+  submit(m){
+    const card=document.querySelector(`[data-card="${m.id}"]`);
+    const [h,a]=[...card.querySelectorAll('input')].map(i=>i.value);
+    if(h===''||a===''||+h<0||+a<0) return this.toast('Enter both scores (0 or higher).');
+    m.guess={h:Math.min(+h,20),a:Math.min(+a,20)}; Store.save(this); this.render();
+    this.toast(`Prediction saved: ${m.home.name} ${m.guess.h}–${m.guess.a} ${m.away.name}`);
+  }
+  finish(m){
+    const e=ScoringEngine.settle(m,MockDataGenerator.score(),this.profile);
+    this.after(e.kind==='exact'?'Exact score! +100 points':e.kind==='outcome'?'Right outcome. +50 points':'Wrong outcome. 0 points');
+  }
+  after(msg){ Store.save(this); this.render(); this.toast(msg); }
+  toast(msg){
+    const t=this.$('toast'); t.textContent=msg; t.hidden=false;
+    clearTimeout(this._t); this._t=setTimeout(()=>t.hidden=true,2600);
+  }
+  badge(t){ return `<span class="badge" style="--c:${t.color}">${t.name}</span>`; }
+  crest(t){ const src=CRESTS[t.name]; return src ? `<img class="crest" src="${src}" alt="${t.name} logo" loading="lazy" onerror="this.outerHTML='<span class=&quot;crest-fallback&quot; style=&quot;--h:${t.hue}&quot; aria-hidden=&quot;true&quot;>${t.code}</span>'">` : `<span class="crest-fallback" style="--h:${t.hue}" aria-hidden="true">${t.code}</span>`; }
+  render(){
+    const p=this.profile, t=p.tier, n=p.nextTier, rank=p.rank(this.board.entries());
+    this.$('hdrBadge').innerHTML=this.badge(t); this.$('hdrPts').textContent=p.points.toLocaleString();
+    this.$('profile').innerHTML=`
+      <div class="stat wide"><small>Current tier</small>${this.badge(t)}
+        <div class="bar" role="progressbar" aria-valuenow="${p.progress}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p.progress}%"></i></div>
+        <small>${n?`${(n.min-p.points).toLocaleString()} pts to ${n.name}`:'Top tier reached'}</small></div>
+      <div class="stat"><small>Total score</small><b>${p.points.toLocaleString()}</b></div>
+      <div class="stat"><small>Accuracy (${p.wins}W · ${p.losses}L)</small><b>${p.accuracy}%</b></div>
+      <div class="stat"><small>Global rank</small><b>#${rank}</b></div>`;
+    const names=['All Leagues',...Object.keys(LEAGUES)];
+    this.$('tabs').innerHTML=names.map(l=>`<button class="tab" role="tab" data-l="${l}" aria-selected="${l===this.league}">${l}</button>`).join('');
+    const list=this.matches.filter(m=>this.league==='All Leagues'||m.league===this.league);
+    this.$('count').textContent=`${list.length} fixtures · ${list.filter(m=>m.result).length} finished`;
+    this.$('grid').innerHTML=list.map(m=>this.card(m)).join('');
+  }
+  card(m){
+    const f=m.status==='final', g=m.guess||{h:'',a:''};
+    const dis=f?'disabled':'';
+    let foot='';
+    if(f){
+      const k=m.points===100?'p100':m.points===50?'p50':'p0';
+      foot=`<div class="actual">Full time <b>${m.result.h} – ${m.result.a}</b></div>
+        <div class="pts ${k}">${m.points===100?'Exact score':m.points===50?'Correct outcome':'Wrong outcome'}: +${m.points} pts</div>`;
+    } else {
+      foot=`<div class="actions"><button class="btn pri" data-act="submit" data-id="${m.id}">${m.guess?'Update prediction':'Submit prediction'}</button>
+        ${m.guess?`<button class="btn" data-act="finish" data-id="${m.id}">Play full-time</button>`:''}</div>`;
+    }
+    return `<article class="card ${f?'final':''}" data-card="${m.id}">
+      <div class="meta"><span>${m.league}</span><span>${f?'Finished':m.kickoff}</span></div>
+      <div class="row">
+        <div class="team">${this.crest(m.home)}${m.home.name}</div>
+        <div class="score"><input type="number" min="0" max="20" inputmode="numeric" aria-label="${m.home.name} goals" value="${g.h}" ${dis}><span class="dash">:</span><input type="number" min="0" max="20" inputmode="numeric" aria-label="${m.away.name} goals" value="${g.a}" ${dis}></div>
+        <div class="team">${this.crest(m.away)}${m.away.name}</div>
+      </div>${foot}</article>`;
+  }
+  renderLb(){
+    const rows=this.board.entries().map((e,i)=>{
+      const t=[...TIERS].reverse().find(x=>e.points>=x.min);
+      return `<tr class="${e.me?'me':''}"><td class="n">${i+1}</td><td>${e.name}${e.me?' (you)':''}</td><td>${this.badge(t)}</td><td>${e.points.toLocaleString()}</td><td>${e.accuracy}%</td></tr>`;
+    }).join('');
+    this.$('lbBody').innerHTML=`<table><thead><tr><th>#</th><th>Player</th><th>Tier</th><th>Points</th><th>Accuracy</th></tr></thead><tbody>${rows}</tbody></table>
+      <div style="padding:14px 16px"><small style="color:var(--mute)">Tier ladder</small><div class="ladder">${TIERS.map(t=>`<span class="badge" style="--c:${t.color}">${t.name} ${t.min.toLocaleString()}${t.name==='Referee'?'+':''}</span>`).join('')}</div></div>`;
+  }
+}
+new App();
+</script>
+</body>
+</html>
